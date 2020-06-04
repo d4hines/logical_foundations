@@ -703,13 +703,16 @@ Fixpoint exp (base power : nat) : nat :=
 
     Translate this into Coq. *)
 
-Fixpoint factorial (n:nat) : nat
-  (* REPLACE THIS LINE WITH ":= _your_definition_ ." *). Admitted.
+Fixpoint factorial (n:nat) : nat :=
+  match n with
+    | O => S O
+    | S n' => mult n (factorial n')
+  end.
 
 Example test_factorial1:          (factorial 3) = 6.
-(* FILL IN HERE *) Admitted.
+Proof. simpl. reflexivity.  Qed.
 Example test_factorial2:          (factorial 5) = (mult 10 12).
-(* FILL IN HERE *) Admitted.
+Proof. simpl. reflexivity.  Qed.
 (** [] *)
 
 (** Again, we can make numerical expressions easier to read and write
@@ -796,17 +799,24 @@ Proof. simpl. reflexivity.  Qed.
     function.  (It can be done with just one previously defined
     function, but you can use two if you need to.) *)
 
-Definition ltb (n m : nat) : bool
-  (* REPLACE THIS LINE WITH ":= _your_definition_ ." *). Admitted.
+Definition ltb (n m : nat) : bool :=
+  match leb n m with
+  | true =>
+    match leb m n with
+    | true => false
+    | false => true
+    end
+  | false => false
+  end.
 
 Notation "x <? y" := (ltb x y) (at level 70) : nat_scope.
 
 Example test_ltb1:             (ltb 2 2) = false.
-(* FILL IN HERE *) Admitted.
+Proof. simpl. reflexivity. Qed.
 Example test_ltb2:             (ltb 2 4) = true.
-(* FILL IN HERE *) Admitted.
+Proof. simpl. reflexivity. Qed.
 Example test_ltb3:             (ltb 4 2) = false.
-(* FILL IN HERE *) Admitted.
+Proof. simpl. reflexivity. Qed.
 (** [] *)
 
 (* ################################################################# *)
@@ -958,7 +968,13 @@ Proof.
 Theorem plus_id_exercise : forall n m o : nat,
   n = m -> m = o -> n + m = m + o.
 Proof.
-  (* FILL IN HERE *) Admitted.
+intros n m o.
+intros H.
+rewrite -> H.
+intros H'.
+rewrite -> H'.
+reflexivity.
+Qed.
 (** [] *)
 
 (** The [Admitted] command tells Coq that we want to skip trying
@@ -990,7 +1006,12 @@ Theorem mult_S_1 : forall n m : nat,
   m = S n ->
   m * (1 + n) = m * m.
 Proof.
-  (* FILL IN HERE *) Admitted.
+intros n m.
+intros H.
+simpl.
+rewrite H.
+reflexivity.
+Qed.
 
   (* (N.b. This proof can actually be completed with tactics other than
      [rewrite], but please do use [rewrite] for the sake of the exercise.) 
@@ -1218,7 +1239,12 @@ Qed.
 Theorem andb_true_elim2 : forall b c : bool,
   andb b c = true -> c = true.
 Proof.
-  (* FILL IN HERE *) Admitted.
+intros b c.
+destruct b; destruct c.
+- reflexivity.
+- simpl. intros H. rewrite H. reflexivity.
+- reflexivity.
+- simpl. intros H.
 (** [] *)
 
 (** **** Exercise: 1 star, standard (zero_nbeq_plus_1)  *)
